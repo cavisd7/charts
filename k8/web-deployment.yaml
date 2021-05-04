@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-dep
+  namespace: app
+spec:
+  selector:
+    matchLabels:
+      app: webapp
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+        - name: webapp
+          image: caseyjm/web-app:latest 
+          ports:
+            - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: web-srv
+  namespace: app
+spec:
+  selector:
+    app: webapp
+  ports:
+    - port: 8080
+  type: ClusterIP

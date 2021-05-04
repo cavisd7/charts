@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: risk-dep
+  namespace: app
+spec:
+  selector:
+    matchLabels:
+      app: riskapp
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: riskapp
+    spec:
+      containers:
+        - name: riskapp
+          image: caseyjm/risk-srv 
+          ports:
+            - containerPort: 5000
+          env:
+            - name: RISK_SRV_ENDPOINT
+              value: http://risk-srv:5000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: risk-srv
+  namespace: app
+spec:
+  selector:
+    app: riskapp
+  ports:
+    - port: 5000
+  type: ClusterIP
